@@ -1,8 +1,9 @@
 // 实现一个简单的列表渲染与删除功能
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./todoList.css";
 import useClickOutside from "../hooks/useClickAway";
+import { FilterStates, useFilterTodos } from "../hooks/useFilterTodos";
 // 题目： 创建一个 TodoList 组件，能够渲染一个待办事项列表，并提供删除待办事项的功能。每个待办事项包括标题和一个删除按钮。
 
 interface Todo {
@@ -30,40 +31,25 @@ export default function TodoList() {
 
   const [inputTodo, setInputTodo] = useState("");
 
-  const [tab, setTab] = useState("all");
+  const [tab, setTab] = useState(FilterStates.ALL);
 
   const changeTab = useCallback((isDone: string) => {
     switch (isDone) {
-      case "all":
-        setTab("all");
+      case FilterStates.ALL:
+        setTab(FilterStates.ALL);
         break;
-      case "notDone":
-        setTab("notDone");
+      case FilterStates.ACTIVE:
+        setTab(FilterStates.ACTIVE);
         break;
-      case "done":
-        setTab("done");
+      case FilterStates.COMPLETED:
+        setTab(FilterStates.COMPLETED);
         break;
       default:
         break;
     }
   }, []);
 
-  // const [filterTodos, setFilterTodos] = useState(todos);
-  // filterTodos 是应该
-  const visibleTodos = useMemo(() => {
-    switch (tab) {
-      case "all":
-        return todos;
-      case "notDone":
-        return todos.filter((v) => !v.isDone);
-        break;
-      case "done":
-        return todos.filter((v) => v.isDone);
-        break;
-      default:
-        return [];
-    }
-  }, [tab, todos]);
+  const visibleTodos = useFilterTodos(todos, tab);
 
   const [curEditId, setCurEditId] = useState("");
 
@@ -132,7 +118,9 @@ export default function TodoList() {
 
   // 只要在mousedown的时候就会执行
   const handleClick = useCallback(() => {
-    setTodos((pre) => pre.map((v) => (v.id === curEditId ? { ...v, isEdit: false } : v)));
+    if (curEditId) {
+      setTodos((pre) => pre.map((v) => (v.id === curEditId ? { ...v, isEdit: false } : v)));
+    }
   }, [curEditId]);
 
   // id变化的时候执行
@@ -157,7 +145,6 @@ export default function TodoList() {
 
   // 同步到本地
   useEffect(() => {
-    console.log(todos);
     localStorage.setItem("todolist", JSON.stringify(todos));
   }, [todos]);
 
@@ -174,9 +161,9 @@ export default function TodoList() {
       ></input>
       <button onClick={addTodo}>添加</button>
       <div className="">
-        <button onClick={() => changeTab("all")}>全部</button>
-        <button onClick={() => changeTab("done")}>已完成</button>
-        <button onClick={() => changeTab("notDone")}>未完成</button>
+        <button onClick={() => changeTab(FilterStates.ALL)}>全部</button>
+        <button onClick={() => changeTab(FilterStates.COMPLETED)}>已完成</button>
+        <button onClick={() => changeTab(FilterStates.ACTIVE)}>未完成</button>
       </div>
       {visibleTodos.map((todo) => (
         <div key={todo.id} className="todo-item">
