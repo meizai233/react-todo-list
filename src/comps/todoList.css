@@ -7,6 +7,10 @@
   width: 500px;
   align-items: center;
 }
+.todo-item .delete-todo {
+  margin-right: 20px;
+  margin-left: auto;
+}
 
 .text-item {
   margin-left: 20px;
