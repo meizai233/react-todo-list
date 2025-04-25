@@ -17,10 +17,9 @@ const initData: Todo[] = [
   { id: "3", text: "Practice coding" },
 ];
 
-export default function TodoList() {
-  // 好像每次渲染都会处理一遍 会不会浪费性能
-  initData.forEach((v) => (v.isEdit = false));
+initData.forEach((v) => (v.isEdit = false));
 
+export default function TodoList() {
   const [todos, setTodos] = useState(initData);
 
   const [inputTodo, setInputTodo] = useState("");
@@ -72,35 +71,25 @@ export default function TodoList() {
         return v;
       });
     });
-    debugger;
     setCurEditId(id);
   }, []);
 
-  useEffect(() => {
-    console.log(todos);
-  }, [todos]);
+  useEffect(() => {}, [todos]);
   const handleSubmit = useCallback(() => {}, []);
 
-  // 应该怎么抽hooks比较好？ hook应该更加通用 不局限于某个方法
-
-  // 这里直接是一个函数的缓存
   // 只要在mousedown的时候就会执行
   const handleClick = useCallback(() => {
-    console.log("first", curEditId);
     setTodos((pre) => pre.map((v) => (v.id === curEditId ? { ...v, isEdit: false } : v)));
   }, [curEditId]);
 
-  // 这样有什么问题? 会反复渲染吗 会的 因此 把这个缓存一下
-  // useClickOutside(
-  //   `todo_item_${curEditId}`,
-  //   () => {
-  //     console.log("first");
-  //     setTodos((pre) => pre.map((v) => (v.id === curEditId ? { ...v, isEdit: false } : v)));
-  //   },
-  //   [curEditId]
-  // );
+  // id变化的时候执行
+  useEffect(() => {
+    // 如果是编辑状态则focus
+    console.log(curEditId, "curEditId");
+    if (curEditId) clickRef.current?.focus();
+  }, [curEditId]);
 
-  useClickOutside(handleClick, `todo_item_${curEditId}`);
+  let clickRef = useClickOutside(handleClick);
 
   return (
     <>
@@ -116,7 +105,7 @@ export default function TodoList() {
           <button onClick={() => deleteTodo(todo.id)}>x</button>
           <button onClick={() => changeIsEdit(todo.id)}>Edit</button>
           <div className="text-item">
-            {todo.isEdit ? <input id={`todo_item_${todo.id}`} value={todo.text} onInput={(e) => editTodo(e, todo.id)} onBlur={() => changeIsEdit(todo.id)}></input> : <span>{todo.text}</span>}
+            {todo.isEdit ? <input ref={todo.isEdit ? clickRef : null} value={todo.text} onInput={(e) => editTodo(e, todo.id)} onBlur={() => changeIsEdit(todo.id)}></input> : <span>{todo.text}</span>}
           </div>
           <br />
         </div>
