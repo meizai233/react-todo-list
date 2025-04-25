@@ -101,7 +101,14 @@ export default function TodoList() {
     setCurEditId(id);
   }, []);
 
-  // 勾选的时候没有触发重新渲染 ???
+  // 全选的逻辑
+  const [checkAll, setCheckAll] = useState(true);
+
+  useEffect(() => {
+    setTodos((todos) => todos.map((v) => ({ ...v, isDone: checkAll })));
+  }, [checkAll]);
+
+  // 勾选的时候没有触发重新渲染
   const changeIsDone = useCallback((id) => {
     setTodos((todos) =>
       todos.map((v) => {
@@ -143,6 +150,10 @@ export default function TodoList() {
     [addTodo]
   );
 
+  const clearChecked = useCallback(() => {
+    setTodos((pre) => pre.filter((v) => !v.isDone));
+  }, []);
+
   // 同步到本地
   useEffect(() => {
     localStorage.setItem("todolist", JSON.stringify(todos));
@@ -160,6 +171,8 @@ export default function TodoList() {
         value={inputTodo}
       ></input>
       <button onClick={addTodo}>添加</button>
+      <button onClick={() => setCheckAll((pre) => !pre)}>全选</button>
+      <button onClick={clearChecked}>清除所选</button>
       <div className="">
         <button onClick={() => changeTab(FilterStates.ALL)}>全部</button>
         <button onClick={() => changeTab(FilterStates.COMPLETED)}>已完成</button>
