@@ -9,10 +9,10 @@ export default function useClickOutside(callback: () => void) {
   // 那e在哪里传递？ e是触发事件自动传递的。。。不是显式传递的。。
   // 在鼠标点击其他地方的时候 取消编辑状态
   useEffect(() => {
-    const handleClick = (e) => {
+    const handleClick = (e: MouseEvent) => {
       // 如果e在input之外的话
 
-      if (ref && ref.current?.contains(e.target)) {
+      if (ref && ref.current?.contains(e.target as Node)) {
         return;
       }
       callback();

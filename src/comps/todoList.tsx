@@ -35,6 +35,7 @@ export default function TodoList() {
       // 唯一id除了用当前时间 还能用啥
       // 有没有更简洁的方式
       // 空输入验证
+
       if (inputTodo === "") {
         alert("输入为空!");
         return;
@@ -85,19 +86,33 @@ export default function TodoList() {
   // id变化的时候执行
   useEffect(() => {
     // 如果是编辑状态则focus
-    console.log(curEditId, "curEditId");
     if (curEditId) clickRef.current?.focus();
   }, [curEditId]);
 
   let clickRef = useClickOutside(handleClick);
+
+  // 键盘保存编辑模式
+  // 监听键盘事件
+  const handleKeyDown = useCallback(
+    (e: any) => {
+      if (e.code === "Enter") {
+        // 此时这里的addTodo又是最开始那个addTodo 所以里面有任何变量都需要添加到依赖里面
+        addTodo();
+      }
+    },
+    [addTodo]
+  );
 
   return (
     <>
       <input
         placeholder="输入待办事项"
         onInput={(e) => {
+          // 按理来说onInput时一直在修改inputtodo 然后keydown的时候直接保存 没什么问题呢
           setInputTodo(e.target?.value);
         }}
+        onKeyDown={handleKeyDown}
+        value={inputTodo}
       ></input>
       <button onClick={addTodo}>添加</button>
       {todos.map((todo) => (
