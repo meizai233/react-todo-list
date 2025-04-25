@@ -1,0 +1,13 @@
+.todo-item {
+  background-color: lightgray;
+  border-radius: 1em;
+  height: 3em;
+  margin: 1em;
+  display: flex;
+  width: 500px;
+  align-items: center;
+}
+
+.text-item {
+  margin-left: 20px;
+}
