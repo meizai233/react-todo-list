@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import "./todoList.css";
+import useClickOutside from "../hooks/useClickAway";
 // 题目： 创建一个 TodoList 组件，能够渲染一个待办事项列表，并提供删除待办事项的功能。每个待办事项包括标题和一个删除按钮。
 
 interface Todo {
@@ -55,8 +56,6 @@ export default function TodoList() {
     setTodos((pre) => pre.map((v) => (v.id === id ? { ...v, text: e.target.value } : v)));
   }, []);
 
-  // useEffect(() => console.log(inputTodo, "effect"), [inputTodo]);
-
   // 在鼠标点击别处的时候 取消编辑模式
 
   const changeIsEdit = useCallback((id) => {
@@ -73,7 +72,7 @@ export default function TodoList() {
         return v;
       });
     });
-
+    debugger;
     setCurEditId(id);
   }, []);
 
@@ -82,25 +81,26 @@ export default function TodoList() {
   }, [todos]);
   const handleSubmit = useCallback(() => {}, []);
 
-  useEffect(() => {
-    // 在鼠标点击其他地方的时候 取消编辑状态
-    const handleClickOut = (e) => {
-      // 如果e在input之外的话
-      const editingElement = document.getElementById(`todo_item_${curEditId}`);
-      if (editingElement && editingElement.contains(e.target)) {
-        return;
-      }
-      setTodos((pre) => pre.map((v) => (v.id === curEditId ? { ...v, isEdit: false } : v)));
-    };
+  // 应该怎么抽hooks比较好？ hook应该更加通用 不局限于某个方法
 
-    // 这样会有什么问题? 会不会反复添加监听? 会反复监听! 浪费!
-    document.addEventListener("mousedown", handleClickOut);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOut);
-    };
-    // 没有deps的情况下 curEdit是什么? 一直为空
+  // 这里直接是一个函数的缓存
+  // 只要在mousedown的时候就会执行
+  const handleClick = useCallback(() => {
+    console.log("first", curEditId);
+    setTodos((pre) => pre.map((v) => (v.id === curEditId ? { ...v, isEdit: false } : v)));
   }, [curEditId]);
+
+  // 这样有什么问题? 会反复渲染吗 会的 因此 把这个缓存一下
+  // useClickOutside(
+  //   `todo_item_${curEditId}`,
+  //   () => {
+  //     console.log("first");
+  //     setTodos((pre) => pre.map((v) => (v.id === curEditId ? { ...v, isEdit: false } : v)));
+  //   },
+  //   [curEditId]
+  // );
+
+  useClickOutside(handleClick, `todo_item_${curEditId}`);
 
   return (
     <>
