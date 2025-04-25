@@ -20,7 +20,10 @@ const initData: Todo[] = [
 initData.forEach((v) => (v.isEdit = false));
 
 export default function TodoList() {
-  const [todos, setTodos] = useState(initData);
+  const [todos, setTodos] = useState(() => {
+    console.log(localStorage.getItem("todolist") || initData);
+    return JSON.parse(localStorage.getItem("todolist") || "") || initData;
+  });
 
   const [inputTodo, setInputTodo] = useState("");
 
@@ -35,7 +38,6 @@ export default function TodoList() {
       // 唯一id除了用当前时间 还能用啥
       // 有没有更简洁的方式
       // 空输入验证
-
       if (inputTodo === "") {
         alert("输入为空!");
         return;
@@ -102,6 +104,11 @@ export default function TodoList() {
     },
     [addTodo]
   );
+
+  // 同步到本地
+  useEffect(() => {
+    localStorage.setItem("todolist", JSON.stringify(todos));
+  }, [todos]);
 
   return (
     <>
