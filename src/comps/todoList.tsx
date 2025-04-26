@@ -178,7 +178,7 @@ export default function TodoList() {
         <button onClick={() => changeTab(FilterStates.ACTIVE)}>未完成</button>
       </div>
       {visibleTodos.map((todo) => (
-        <TodoItem todo={todo} changeIsEdit={changeIsEdit} changeIsDone={changeIsDone} editTodo={editTodo} deleteTodo={deleteTodo} clickRef={clickRef}></TodoItem>
+        <TodoItem key={todo.id} todo={todo} changeIsEdit={changeIsEdit} changeIsDone={changeIsDone} editTodo={editTodo} deleteTodo={deleteTodo} clickRef={clickRef}></TodoItem>
       ))}
       <button onClick={handleSubmit}>Submit</button>
     </>

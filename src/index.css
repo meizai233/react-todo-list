@@ -68,3 +68,10 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.red {
+  background-color: red;
+}
+.blue {
+  background-color: blue;
+}
