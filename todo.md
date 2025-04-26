@@ -40,7 +40,7 @@
 7. **优化性能**：
 
    - 使用 React.memo 避免不必要的重渲染
-   - 合理使用 useCallback 和 useMemo
+   - 合理使用 useCallback 和 useMemo 111
    - 了解依赖数组的陷阱
 
 8. **添加拖拽排序功能**：

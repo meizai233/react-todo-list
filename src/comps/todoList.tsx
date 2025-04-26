@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import "./todoList.css";
 import useClickOutside from "../hooks/useClickAway";
 import { FilterStates, useFilterTodos } from "../hooks/useFilterTodos";
+import TodoItem from "./todoItem";
 // 题目： 创建一个 TodoList 组件，能够渲染一个待办事项列表，并提供删除待办事项的功能。每个待办事项包括标题和一个删除按钮。
 
 interface Todo {
@@ -81,8 +82,6 @@ export default function TodoList() {
   const editTodo = useCallback((e, id) => {
     setTodos((pre) => pre.map((v) => (v.id === id ? { ...v, text: e.target.value } : v)));
   }, []);
-
-  // 在鼠标点击别处的时候 取消编辑模式
 
   const changeIsEdit = useCallback((id) => {
     setTodos((todos) => {
@@ -179,18 +178,7 @@ export default function TodoList() {
         <button onClick={() => changeTab(FilterStates.ACTIVE)}>未完成</button>
       </div>
       {visibleTodos.map((todo) => (
-        <div key={todo.id} className="todo-item">
-          <input type="checkbox" name="选项组名" checked={todo.isDone} onChange={() => changeIsDone(todo.id)}></input>
-          {/* <label for="选项ID">选项文本</label> */}
-          <button onClick={() => changeIsEdit(todo.id)}>Edit</button>
-          <div className="text-item">
-            {todo.isEdit ? <input ref={todo.isEdit ? clickRef : null} value={todo.text} onInput={(e) => editTodo(e, todo.id)} onBlur={() => changeIsEdit(todo.id)}></input> : <span>{todo.text}</span>}
-          </div>
-          <button className="delete-todo" onClick={() => deleteTodo(todo.id)}>
-            x
-          </button>
-          <br />
-        </div>
+        <TodoItem todo={todo} changeIsEdit={changeIsEdit} changeIsDone={changeIsDone} editTodo={editTodo} deleteTodo={deleteTodo} clickRef={clickRef}></TodoItem>
       ))}
       <button onClick={handleSubmit}>Submit</button>
     </>
