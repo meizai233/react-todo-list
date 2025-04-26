@@ -1,34 +1,15 @@
 // 实现一个简单的列表渲染与删除功能
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import "./todoList.css";
 import useClickOutside from "../hooks/useClickAway";
 import { FilterStates, useFilterTodos } from "../hooks/useFilterTodos";
 import TodoItem from "./todoItem";
+import { TodosContext } from "../contexts/todo-context";
 // 题目： 创建一个 TodoList 组件，能够渲染一个待办事项列表，并提供删除待办事项的功能。每个待办事项包括标题和一个删除按钮。
 
-interface Todo {
-  id: string;
-  text: string;
-  [key: string]: any;
-}
-
-const initData: Todo[] = [
-  { id: "1", text: "Learn React" },
-  { id: "2", text: "Build a project" },
-  { id: "3", text: "Practice coding" },
-];
-
-initData.forEach((v) => {
-  v.isEdit = false;
-  v.isDone = false;
-});
-
 export default function TodoList() {
-  const [todos, setTodos] = useState(() => {
-    console.log(localStorage.getItem("todolist") || initData);
-    return JSON.parse(localStorage.getItem("todolist") || "") || initData;
-  });
+  const { todos, setTodos, changeIsEdit } = useContext(TodosContext);
 
   const [inputTodo, setInputTodo] = useState("");
 
@@ -54,10 +35,6 @@ export default function TodoList() {
 
   const [curEditId, setCurEditId] = useState("");
 
-  const deleteTodo = useCallback((id) => {
-    setTodos((todos) => todos.filter((v) => v.id !== id));
-  }, []);
-
   const addTodo = useCallback(
     () => {
       // 唯一id除了用当前时间 还能用啥
@@ -79,45 +56,12 @@ export default function TodoList() {
     [inputTodo]
   );
 
-  const editTodo = useCallback((e, id) => {
-    setTodos((pre) => pre.map((v) => (v.id === id ? { ...v, text: e.target.value } : v)));
-  }, []);
-
-  const changeIsEdit = useCallback((id) => {
-    setTodos((todos) => {
-      // 错误: 违反了不可变更新???? 待办
-      // 是哪里不可变 直接赋值不对吗
-      return todos.map((v) => {
-        if (v.id === id) {
-          // 不应该直接更改
-          // v.isEdit = true;
-          // 应该拷贝一下
-          return { ...v, isEdit: !v.isEdit };
-        }
-        return { ...v };
-      });
-    });
-    setCurEditId(id);
-  }, []);
-
   // 全选的逻辑
   const [checkAll, setCheckAll] = useState(true);
 
   useEffect(() => {
     setTodos((todos) => todos.map((v) => ({ ...v, isDone: checkAll })));
   }, [checkAll]);
-
-  // 勾选的时候没有触发重新渲染
-  const changeIsDone = useCallback((id) => {
-    setTodos((todos) =>
-      todos.map((v) => {
-        if (v.id === id) {
-          return { ...v, isDone: !v.isDone };
-        }
-        return v;
-      })
-    );
-  }, []);
 
   useEffect(() => {}, [todos]);
   const handleSubmit = useCallback(() => {}, []);
@@ -158,6 +102,8 @@ export default function TodoList() {
     localStorage.setItem("todolist", JSON.stringify(todos));
   }, [todos]);
 
+  const todoListChangeIsEdit = useCallback((id) => changeIsEdit(id, setCurEditId), [curEditId]);
+
   return (
     <>
       <input
@@ -178,7 +124,7 @@ export default function TodoList() {
         <button onClick={() => changeTab(FilterStates.ACTIVE)}>未完成</button>
       </div>
       {visibleTodos.map((todo) => (
-        <TodoItem key={todo.id} todo={todo} changeIsEdit={changeIsEdit} changeIsDone={changeIsDone} editTodo={editTodo} deleteTodo={deleteTodo} clickRef={clickRef}></TodoItem>
+        <TodoItem key={todo.id} todo={todo} clickRef={clickRef} onClick={todoListChangeIsEdit}></TodoItem>
       ))}
       <button onClick={handleSubmit}>Submit</button>
     </>

@@ -1,4 +1,7 @@
-export default function TodoItem({ todo, changeIsEdit, changeIsDone, editTodo, deleteTodo, clickRef }) {
+import React, { useContext } from "react";
+import { TodosContext } from "../contexts/todo-context";
+
+const TodoItem = React.memo(function TodoItem({ todo, clickRef, onClick }) {
   // props传todo过来 那对于todo的增删改查 应该放在item还是放在父组件呢？
   // 如果放在子组件 那相当于修改了父组件的props 不符合单项数据流的规范
 
@@ -10,15 +13,17 @@ export default function TodoItem({ todo, changeIsEdit, changeIsDone, editTodo, d
   // 所以还是放在父组件身上好一些
   // 现在出现的问题：放在父组件 一下子传过来的参数又太多了???
   // 1. 可以把crud合并成一个方法 或者把这些合并成一个对象呀
-  // 2.
+  // 2. context试试
 
   // 在鼠标点击别处的时候 取消编辑模式
+  console.log("todoitem", todo.id);
+  const { changeIsDone, changeIsEdit, editTodo, deleteTodo } = useContext(TodosContext);
 
   return (
     <div key={todo.id} className="todo-item">
       <input type="checkbox" name="选项组名" checked={todo.isDone} onChange={() => changeIsDone(todo.id)}></input>
       {/* <label for="选项ID">选项文本</label> */}
-      <button onClick={() => changeIsEdit(todo.id)}>Edit</button>
+      <button onClick={() => onClick(todo.id)}>Edit</button>
       <div className="text-item">
         {todo.isEdit ? <input ref={todo.isEdit ? clickRef : null} value={todo.text} onInput={(e) => editTodo(e, todo.id)} onBlur={() => changeIsEdit(todo.id)}></input> : <span>{todo.text}</span>}
       </div>
@@ -28,4 +33,6 @@ export default function TodoItem({ todo, changeIsEdit, changeIsDone, editTodo, d
       <br />
     </div>
   );
-}
+});
+
+export default TodoItem;
