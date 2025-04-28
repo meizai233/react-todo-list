@@ -2,7 +2,7 @@
   background-color: lightgray;
   border-radius: 1em;
   height: 3em;
-  margin: 1em;
+  /* margin: 1em; */
   display: flex;
   width: 500px;
   align-items: center;
@@ -12,6 +12,10 @@
   margin-left: auto;
 }
 
+.todo-gap {
+  height: 1em;
+  width: 500px;
+}
 .text-item {
   margin-left: 20px;
 }

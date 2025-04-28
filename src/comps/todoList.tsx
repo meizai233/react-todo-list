@@ -1,6 +1,6 @@
 // 实现一个简单的列表渲染与删除功能
 
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import "./todoList.css";
 import useClickOutside from "../hooks/useClickAway";
 import { FilterStates, useFilterTodos } from "../hooks/useFilterTodos";
@@ -9,6 +9,8 @@ import { TodosContext } from "../contexts/todo-context";
 // 题目： 创建一个 TodoList 组件，能够渲染一个待办事项列表，并提供删除待办事项的功能。每个待办事项包括标题和一个删除按钮。
 
 export default function TodoList() {
+  // 待办 有一个问题 context应该是每个todolist里唯一的 也就是说每个todolist都应该有一个独享的todosContext 这个怎么做呢?
+
   const { todos, setTodos, changeIsEdit } = useContext(TodosContext);
 
   const [inputTodo, setInputTodo] = useState("");
@@ -104,6 +106,36 @@ export default function TodoList() {
 
   const todoListChangeIsEdit = useCallback((id) => changeIsEdit(id, setCurEditId), [curEditId]);
 
+  const curDragRef = useRef(null);
+
+  const handleCurDrag = useCallback((id) => {
+    // 把当前对象置为drag
+    curDragRef.current = id;
+  }, []);
+
+  function handleDragStart(id) {
+    handleCurDrag(id);
+  }
+
+  // 拖拽到上方事件
+  function handleDragOver(e) {
+    e.preventDefault();
+  }
+  function handleDrop(dropId) {
+    // ??? 为什么要阻止默认行为 因为默认行为是阻止drop 那会不会阻止其他默认行为呢？
+    // e.preventDefault();
+    const dragId = curDragRef.current;
+    setTodos((pre) => {
+      const dragItem = pre.find((v) => v.id === dragId);
+      const todos = pre.filter((v) => v.id !== dragId);
+
+      const dropIndex = todos.findIndex((v) => v.id === dropId);
+      todos.splice(dropIndex, 0, dragItem);
+      console.log(todos, "after");
+      return todos;
+    });
+  }
+
   return (
     <>
       <input
@@ -124,7 +156,21 @@ export default function TodoList() {
         <button onClick={() => changeTab(FilterStates.ACTIVE)}>未完成</button>
       </div>
       {visibleTodos.map((todo) => (
-        <TodoItem key={todo.id} todo={todo} clickRef={clickRef} onClick={todoListChangeIsEdit}></TodoItem>
+        // 实现简单的拖拽 todoItem是可以拖拽的 怎么实现呢?
+        // todoItem写一个useDraggble 做什么?
+        // 给这个元素加一个dragstart事件 drop 这样会不会每个元素都注册 造成开销? 试试
+        <TodoItem
+          className="drag-todo-item"
+          key={todo.id}
+          todo={todo}
+          clickRef={clickRef}
+          onClick={todoListChangeIsEdit}
+          onDragStart={handleDragStart}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+          handleCurDrag={handleCurDrag}
+          curDragRef={curDragRef}
+        ></TodoItem>
       ))}
       <button onClick={handleSubmit}>Submit</button>
     </>
