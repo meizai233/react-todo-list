@@ -17,12 +17,12 @@ const TodoItem = React.memo(function TodoItem({ todo, clickRef, onClick, ...prop
 
   // 在鼠标点击别处的时候 取消编辑模式
 
-  const { dragProps } = props;
+  const { domProps } = props;
   const { changeIsDone, changeIsEdit, editTodo, deleteTodo, setTodos } = useContext(TodosContext);
 
   return (
     <>
-      <div key={todo.id} className="todo-item" {...dragProps}>
+      <div key={todo.id} className="todo-item" {...domProps}>
         <input type="checkbox" name="选项组名" checked={todo.isDone} onChange={() => changeIsDone(todo.id)}></input>
         {/* <label for="选项ID">选项文本</label> */}
         <button onClick={() => onClick(todo.id)}>Edit</button>
