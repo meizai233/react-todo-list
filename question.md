@@ -16,3 +16,31 @@
   - 方案 1 drag 的逻辑放在 todoItem，但是感觉一个 list 只有 1 个 drag 和 drop
   - 方案 2 逻辑放在 todoList 里，drag 和 drop 的逻辑都传给子组件
   - 方案 3 useDrag() 返回：当前的 drag 对象 ref 传参: 需要被 drag 的对象，以及需要被 drop 的对象，以及 dragstart 的 cb，dragover 的 cb，drop 的 cb
+
+  - 最终可以优化的方案
+  - 对于批量让组件 drag，需要设置 draggable，dragStart，dragEnd 等，用个 useDrag，入参数为组件 id，返回参数为组件 props
+  - 对于组件 drag 和 drop 过程中的数据 可以用 dataTransfer 存放
+  - 对于批量让组件 drop，设置 dropEnd 事件
+  - 那如何对应不同的 drag 和 drop 组？对应 drag 和 drop 的关系???
+
+- 关于拖拽操作的基本实现及优化方案：
+
+  - 需求：给 todo-item 设置 draggable, dragstart，给 todo-gap 设置 dragover，drop 事件，同时一个 todolist 需要维护一个单独的 curDragId
+  - 方案 1: <TodoItem
+          className="drag-todo-item"
+          key={todo.id}
+          todo={todo}
+          clickRef={clickRef}
+          onClick={todoListChangeIsEdit}
+          onDragStart={handleDragStart}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+          handleCurDrag={handleCurDrag}
+          curDragRef={curDragRef}
+        ></TodoItem> 传一坨给 todoItem todoItem 再一个个拿到并赋值给他的 div
+  - 缺点：每个 item 都单独绑定了事件，待办，性能需要观察。且 todoItem 变得非常重逻辑非常多，drag 操作无法复用
+
+  - 方案 2: useDraggable 返回一些 draggableProps 贴在 todoItem 上，<TodoItem className="drag-todo-item" todo={todo} clickRef={clickRef} onClick={todoListChangeIsEdit} dragProps={useDraggable(todo.id)}></TodoItem> 然后解构 dragProps
+  - 缺点：todoItem 身上还是需要单独加 drag 的逻辑，久而久之会很重
+
+  - 方案 3: HOC

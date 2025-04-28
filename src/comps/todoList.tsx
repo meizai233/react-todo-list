@@ -6,6 +6,9 @@ import useClickOutside from "../hooks/useClickAway";
 import { FilterStates, useFilterTodos } from "../hooks/useFilterTodos";
 import TodoItem from "./todoItem";
 import { TodosContext } from "../contexts/todo-context";
+import TodoItemGap from "./todoItemGap";
+import useDraggable from "../hooks/useDraggable";
+import useDroppable from "../hooks/useDroppable";
 // 题目： 创建一个 TodoList 组件，能够渲染一个待办事项列表，并提供删除待办事项的功能。每个待办事项包括标题和一个删除按钮。
 
 export default function TodoList() {
@@ -156,21 +159,11 @@ export default function TodoList() {
         <button onClick={() => changeTab(FilterStates.ACTIVE)}>未完成</button>
       </div>
       {visibleTodos.map((todo) => (
-        // 实现简单的拖拽 todoItem是可以拖拽的 怎么实现呢?
-        // todoItem写一个useDraggble 做什么?
-        // 给这个元素加一个dragstart事件 drop 这样会不会每个元素都注册 造成开销? 试试
-        <TodoItem
-          className="drag-todo-item"
-          key={todo.id}
-          todo={todo}
-          clickRef={clickRef}
-          onClick={todoListChangeIsEdit}
-          onDragStart={handleDragStart}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-          handleCurDrag={handleCurDrag}
-          curDragRef={curDragRef}
-        ></TodoItem>
+        // 给这个元素加一个dragstart事件 drop 这样会不会每个元素都注册 造成开销??? 待办
+        <div key={todo.id}>
+          <TodoItem className="drag-todo-item" todo={todo} clickRef={clickRef} onClick={todoListChangeIsEdit} dragProps={useDraggable(todo.id)}></TodoItem>
+          <TodoItemGap todo={todo} dropProps={useDroppable(todo.id)}></TodoItemGap>
+        </div>
       ))}
       <button onClick={handleSubmit}>Submit</button>
     </>

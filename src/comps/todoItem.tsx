@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { TodosContext } from "../contexts/todo-context";
 
-const TodoItem = React.memo(function TodoItem({ todo, clickRef, onClick, onDragStart, onDragOver, onDrop }) {
+const TodoItem = React.memo(function TodoItem({ todo, clickRef, onClick, ...props }) {
   // props传todo过来 那对于todo的增删改查 应该放在item还是放在父组件呢？
   // 如果放在子组件 那相当于修改了父组件的props 不符合单项数据流的规范
 
@@ -16,15 +16,13 @@ const TodoItem = React.memo(function TodoItem({ todo, clickRef, onClick, onDragS
   // 2. context试试
 
   // 在鼠标点击别处的时候 取消编辑模式
-  console.log("todoitem", todo.id);
-  const { changeIsDone, changeIsEdit, editTodo, deleteTodo, setTodos } = useContext(TodosContext);
 
-  // 拖拽功能
-  // useDraggable()
+  const { dragProps } = props;
+  const { changeIsDone, changeIsEdit, editTodo, deleteTodo, setTodos } = useContext(TodosContext);
 
   return (
     <>
-      <div key={todo.id} draggable={true} className="todo-item" onDragStart={() => onDragStart(todo.id)}>
+      <div key={todo.id} className="todo-item" {...dragProps}>
         <input type="checkbox" name="选项组名" checked={todo.isDone} onChange={() => changeIsDone(todo.id)}></input>
         {/* <label for="选项ID">选项文本</label> */}
         <button onClick={() => onClick(todo.id)}>Edit</button>
@@ -36,7 +34,6 @@ const TodoItem = React.memo(function TodoItem({ todo, clickRef, onClick, onDragS
         </button>
         <br />
       </div>
-      <div className="todo-gap" onDragOver={onDragOver} onDrop={() => onDrop(todo.id)}></div>
     </>
   );
 });

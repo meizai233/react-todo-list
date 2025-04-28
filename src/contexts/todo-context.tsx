@@ -17,7 +17,7 @@ initData.forEach((v) => {
   v.isDone = false;
 });
 
-const initContext = { todos: initData, setTodos: (todos) => {}, changeIsDone: () => {}, changeIsEdit: () => {}, editTodo: () => {}, deleteTodo: () => {} };
+const initContext = { todos: initData, setTodos: (todos) => {}, changeIsDone: () => {}, changeIsEdit: () => {}, editTodo: () => {}, deleteTodo: () => {}, curDragTodo: null };
 
 export const TodosContext = createContext(initContext);
 
