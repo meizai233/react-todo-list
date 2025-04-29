@@ -1,14 +1,14 @@
 // 实现一个简单的列表渲染与删除功能
 
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import useClickOutside from "../../hooks/useClickAway";
+import { FilterStates, useFilterTodos } from "../../hooks/useFilterTodos";
+import TodoItem from "../TodoItem/todoItem";
+import { TodosContext } from "../../contexts/todo-context";
+import TodoItemGap from "../TodoItemGap/todoItemGap";
+import useDroppable from "../common/Droppable/useDroppable";
+import Draggable from "../common/Draggable/Draggable";
 import "./todoList.css";
-import useClickOutside from "../hooks/useClickAway";
-import { FilterStates, useFilterTodos } from "../hooks/useFilterTodos";
-import TodoItem from "./todoItem";
-import { TodosContext } from "../contexts/todo-context";
-import TodoItemGap from "./todoItemGap";
-import withDraggable from "../HOC/withDraggable";
-import useDroppable from "../hooks/useDroppable";
 // 题目： 创建一个 TodoList 组件，能够渲染一个待办事项列表，并提供删除待办事项的功能。每个待办事项包括标题和一个删除按钮。
 
 export default function TodoList() {
@@ -124,10 +124,11 @@ export default function TodoList() {
   function handleDragOver(e) {
     e.preventDefault();
   }
-  function handleDrop(dropId) {
-    // ??? 为什么要阻止默认行为 因为默认行为是阻止drop 那会不会阻止其他默认行为呢？
-    // e.preventDefault();
-    const dragId = curDragRef.current;
+  function handleDrop(e, data) {
+    e.preventDefault();
+    // const dragId = curDragRef.current;
+    const dragId = e.dataTransfer?.getData("dragId");
+    const { dropId } = data;
     setTodos((pre) => {
       const dragItem = pre.find((v) => v.id === dragId);
       const todos = pre.filter((v) => v.id !== dragId);
@@ -138,8 +139,6 @@ export default function TodoList() {
       return todos;
     });
   }
-
-  const DraggableTodo = withDraggable(TodoItem);
 
   return (
     <>
@@ -163,8 +162,14 @@ export default function TodoList() {
       {visibleTodos.map((todo) => (
         // 给这个元素加一个dragstart事件 drop 这样会不会每个元素都注册 造成开销??? 待办
         <div key={todo.id}>
-          <DraggableTodo className="drag-todo-item" todo={todo} clickRef={clickRef} onClick={todoListChangeIsEdit}></DraggableTodo>
-          <TodoItemGap todo={todo} dropProps={useDroppable(todo.id)}></TodoItemGap>
+          {/* hooks + draggable */}
+          {/* <DraggableTodo className="drag-todo-item" todo={todo} clickRef={clickRef} onClick={todoListChangeIsEdit}></DraggableTodo> */}
+
+          {/* container + draggable */}
+          <Draggable dragId={todo.id}>
+            <TodoItem className="drag-todo-item" todo={todo} clickRef={clickRef} onClick={todoListChangeIsEdit}></TodoItem>
+          </Draggable>
+          <TodoItemGap todo={todo} dropProps={useDroppable({ data: { dropId: todo.id }, dropCb: handleDrop })}></TodoItemGap>
         </div>
       ))}
       <button onClick={handleSubmit}>Submit</button>

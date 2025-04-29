@@ -43,4 +43,31 @@
   - 方案 2: useDraggable 返回一些 draggableProps 贴在 todoItem 上，<TodoItem className="drag-todo-item" todo={todo} clickRef={clickRef} onClick={todoListChangeIsEdit} dragProps={useDraggable(todo.id)}></TodoItem> 然后解构 dragProps
   - 缺点：todoItem 身上还是需要单独加 drag 的逻辑，久而久之会很重
 
-  - 方案 3: HOC
+  - 方案 3: HOC，function withDraggable(Component) {
+    return function DragComp(props) {
+    const { todo } = props;
+    return <Component {...props} domProps={useDraggable(todo.id)} />;} 入参一个组件 return 一个函数组件
+  - 优点：提高了 todoItem 的原子性 不需要侵入性的在 todoItem 中增加过多的 drag 逻辑。功能复用 内聚性更高
+  - 缺点：嵌套过深 性能下降；难以调试
+
+  - 方案 4: useDraggable + DragContainer，useDraggable 内聚 drag 逻辑，dragContainer 在 todoItem 外面套一层，这样就不用修改 todoItem 里的内容
+  - 优点：不用对现有的组件进行修改
+  - 缺点：目前看来没有啥缺点
+
+- HOC 和组件包装的区别
+
+  - HOC：是一个函数，用来增强一个组件（逻辑功能上
+    - 创建：withDragger(Comp), return function (props){return <Comp/>} 返回了一个新的组件
+    - 使用：const DraggerItem = withDragger(Item)
+  - 组件包装：是一个组件 接受了另一个组件 他们是父子关系
+    - 创建：和一个普通组件一样创建 外面可以套一些 div 样式啊之类 也可以套逻辑 然后把{children}放到想要的位置
+
+- 我的想法：如果单纯用 useHook 会导致一个组件变得很臃肿功能很多，不够原子化，不以拆分功能。如果单纯用 HOC，加了很多功能的话会导致组件嵌套很深，不易维护而且可能有 props 冲突，来源也不清晰。那 HOC+useHooks？，可以灵活根据业务拆分组合不同的 HOC 逻辑，组件组合也可以灵活拆分和组合逻辑。
+
+- 封装 useDrag 和 useDrop 遇到的问题和想法：
+
+  - 本来打算组件组合+useDrag 实现，然后对于 useDrag 的回调函数可能依赖于其他地方的上下文（比如 handleDrop 中 setTodos，而 setTodos 依赖于业务组件，无法在 useDrop 的上下文执行，如果强行执行，需要把 setTodos 再作为入参传进去）这样的实现很不优雅而且数据源很不清晰，多层嵌套，且实现后也很难做扩展
+  -
+
+- 低代码的设计逻辑：
+  - 有个 useDraggable hook 放到每个物料组件身上 然后用一个组件包裹一下这个物料组件

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { TodosContext } from "../contexts/todo-context";
+import { TodosContext } from "../../contexts/todo-context";
 
 const TodoItem = React.memo(function TodoItem({ todo, clickRef, onClick, ...props }) {
   // props传todo过来 那对于todo的增删改查 应该放在item还是放在父组件呢？
@@ -9,11 +9,6 @@ const TodoItem = React.memo(function TodoItem({ todo, clickRef, onClick, ...prop
 
   // 哪个比较好？父组件修改子组件的话要查找id，不知道性能会不会开销大 但一般来说这点性能不算什么
   // 子组件修改自己的属性的话 只是修改todo 需要setTodo 但是todos不知情 组件可能不会重新渲染
-
-  // 所以还是放在父组件身上好一些
-  // 现在出现的问题：放在父组件 一下子传过来的参数又太多了???
-  // 1. 可以把crud合并成一个方法 或者把这些合并成一个对象呀
-  // 2. context试试
 
   // 在鼠标点击别处的时候 取消编辑模式
 

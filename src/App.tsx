@@ -1,7 +1,7 @@
 import "./App.css";
 import { useState } from "react";
 import TodosProvider from "./contexts/todo-context";
-import TodoList from "./comps/todoList";
+import TodoList from "./comps/TodoList/todoList";
 function App() {
   // const targetDate = new Date().getTime() + 60000;
 
