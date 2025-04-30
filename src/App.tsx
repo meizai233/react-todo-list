@@ -1,6 +1,6 @@
 import "./App.css";
 import { useState } from "react";
-import SearchableTable from "./comps/SearchableTable/SearchableTable";
+import LazyLoadList from "./comps/LazyLoadList";
 function App() {
   // const targetDate = new Date().getTime() + 60000;
 
@@ -13,7 +13,8 @@ function App() {
       {/* <TodosProvider>
         <TodoList />
       </TodosProvider> */}
-      <SearchableTable></SearchableTable>
+      {/* <SearchableTable></SearchableTable> */}
+      <LazyLoadList />{" "}
     </>
   );
 }
