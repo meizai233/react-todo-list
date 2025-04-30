@@ -1,8 +1,4 @@
 .todo-item {
-  background-color: lightgray;
-  border-radius: 1em;
-  height: 3em;
-  /* margin: 1em; */
   display: flex;
   width: 500px;
   align-items: center;
@@ -18,4 +14,129 @@
 }
 .text-item {
   margin-left: 20px;
+}
+.operate-item {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #f4f4f4;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between; /* 左右分布 */
+  align-items: center;
+}
+
+.operate-item input {
+  padding: 8px 15px;
+  border: 1px solid #ccc;
+  border-radius: 20px; /* 圆角效果 */
+  font-size: 14px;
+  width: 60%; /* 输入框宽度占父容器的60% */
+  max-width: 400px; /* 最大宽度 */
+  margin: 0 auto; /* 居中 */
+  box-sizing: border-box;
+}
+
+.operate-item button {
+  padding: 8px 16px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 0 5px;
+}
+
+.operate-item button:hover {
+  background-color: #0056b3;
+}
+
+.filter-buttons {
+  position: fixed;
+  top: 60px; /* 距离顶部60px */
+  left: 0;
+  width: 100%;
+  background-color: #f9f9f9;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+  display: flex;
+  justify-content: space-between; /* 左右分布 */
+  align-items: center;
+}
+
+.filter-buttons button {
+  padding: 8px 16px;
+  border: none;
+  background-color: #28a745;
+  color: white;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 0 5px;
+}
+
+.filter-buttons button:hover {
+  background-color: #218838;
+}
+
+/* 容器样式 */
+.todo-container {
+  /* position: fixed; */
+  /* top: 100px; */
+  display: flex;
+  flex-direction: column; /* 垂直排列待办项 */
+  gap: 10px; /* 每个待办项之间的间隔 */
+  margin-top: 20px;
+  padding: 10px;
+}
+
+/* 每个待办项的样式 */
+.drag-todo-item {
+  display: flex;
+  justify-content: space-between; /* 让待办项的内容两端对齐 */
+  align-items: center;
+  background-color: #fff;
+  padding: 12px;
+  border-radius: 8px; /* 圆角效果 */
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 轻微阴影 */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer; /* 鼠标悬停时显示为可点击 */
+}
+
+.drag-todo-item:hover {
+  transform: translateY(-5px); /* 鼠标悬停时微微上移 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* 增加阴影 */
+}
+
+/* 拖动开始时的效果 */
+.drag-todo-item .dragging {
+  opacity: 0.5; /* 拖动时透明度降低 */
+  cursor: grabbing; /* 拖动时显示抓取手势 */
+}
+
+/* 高亮显示正在拖动的元素 */
+.drag-todo-item .highlight {
+  background-color: #eaf7f7; /* 拖动目标高亮 */
+  border-color: #00aaff; /* 高亮边框颜色 */
+  box-shadow: 0 4px 8px rgba(0, 170, 255, 0.3); /* 更强的阴影 */
+}
+
+/* Droppable区域样式 */
+.todo-item-gap {
+  padding: 5px;
+  margin: 0;
+  transition: background-color 0.3s ease;
+}
+
+/* Drop时的效果 */
+.todo-item-gap .droppable-active {
+  background-color: #f0f8ff; /* 放置目标高亮 */
 }

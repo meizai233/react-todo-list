@@ -23,6 +23,10 @@ export default function useDraggable(params: dragParams) {
     for (let k in data) {
       e.dataTransfer?.setData(k, data[k]);
     }
+    console.log(e.target.classList);
+    e.target.classList.add("dragging");
+    e.target.classList.add("highlight");
+
     // e.dataTransfer?.setData("dragId", params.data?);
     // dragStartCb()
     // ??? 此处的依赖不知道该怎么设置 这里的e 会缓存吗 他是一个纯函数感觉没有依赖到外部属性
@@ -31,13 +35,17 @@ export default function useDraggable(params: dragParams) {
 
   // const handleDragOver = useCallback(function (e: DragEvent) {}, [dragId]);
 
-  // function handleDragEnd(e: DragEvent) {}
+  const handleDragEnd = useCallback(function handleDragEnd(e: DragEvent) {
+    console.log(e.target.classList);
+    e.target.classList.remove("dragging");
+    e.target.classList.remove("highlight");
+  }, []);
 
   const draggableProps = useMemo(
     () => ({
       draggable: true,
       onDragStart: (e: DragEvent) => handleDragStart(e),
-      // onDragEnd: (e: DragEvent) => handleDragEnd(e),
+      onDragEnd: (e: DragEvent) => handleDragEnd(e),
       // onDragOver: (e: DragEvent) => handleDragOver(e),
     }),
     []

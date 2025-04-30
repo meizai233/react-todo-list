@@ -8,7 +8,11 @@ const Draggable = React.memo(function Draggable({ children, dragId }) {
     },
   });
 
-  return <div {...draggableProps}>{children}</div>;
+  return (
+    <div className="drag-todo-item" {...draggableProps}>
+      {children}
+    </div>
+  );
 });
 
 export default Draggable;

@@ -141,36 +141,34 @@ export default function TodoList() {
 
   return (
     <>
-      <input
-        placeholder="输入待办事项"
-        onInput={(e) => {
-          // 按理来说onInput时一直在修改inputtodo 然后keydown的时候直接保存 没什么问题呢
-          setInputTodo(e.target?.value);
-        }}
-        onKeyDown={handleKeyDown}
-        value={inputTodo}
-      ></input>
-      <button onClick={addTodo}>添加</button>
-      <button onClick={() => setCheckAll((pre) => !pre)}>全选</button>
-      <button onClick={clearChecked}>清除所选</button>
-      <div className="">
+      <div className="operate-item">
+        <input placeholder="输入待办事项" onInput={(e) => setInputTodo(e.target?.value)} onKeyDown={handleKeyDown} value={inputTodo} />
+        <button onClick={addTodo}>添加</button>
+        <button onClick={() => setCheckAll((pre) => !pre)}>全选</button>
+        <button onClick={clearChecked}>清除所选</button>
+      </div>
+
+      <div className="filter-buttons">
         <button onClick={() => changeTab(FilterStates.ALL)}>全部</button>
         <button onClick={() => changeTab(FilterStates.COMPLETED)}>已完成</button>
         <button onClick={() => changeTab(FilterStates.ACTIVE)}>未完成</button>
       </div>
-      {visibleTodos.map((todo) => (
-        // 给这个元素加一个dragstart事件 drop 这样会不会每个元素都注册 造成开销??? 待办
-        <div key={todo.id}>
-          {/* hooks + draggable */}
-          {/* <DraggableTodo className="drag-todo-item" todo={todo} clickRef={clickRef} onClick={todoListChangeIsEdit}></DraggableTodo> */}
 
-          {/* container + draggable */}
-          <TodoItemGap todo={todo} dropProps={useDroppable({ data: { dropId: todo.id }, dropCb: handleDrop })}></TodoItemGap>
-          <Draggable dragId={todo.id}>
-            <TodoItem className="drag-todo-item" todo={todo} clickRef={clickRef} onClick={todoListChangeIsEdit}></TodoItem>
-          </Draggable>
-        </div>
-      ))}
+      <div className="todo-container">
+        {visibleTodos.map((todo) => (
+          // 给这个元素加一个dragstart事件 drop 这样会不会每个元素都注册 造成开销??? 待办
+          <div key={todo.id}>
+            {/* hooks + draggable */}
+            {/* <DraggableTodo className="drag-todo-item" todo={todo} clickRef={clickRef} onClick={todoListChangeIsEdit}></DraggableTodo> */}
+
+            {/* container + draggable */}
+            <TodoItemGap todo={todo} dropProps={useDroppable({ data: { dropId: todo.id }, dropCb: handleDrop })}></TodoItemGap>
+            <Draggable dragId={todo.id}>
+              <TodoItem todo={todo} clickRef={clickRef} onClick={todoListChangeIsEdit}></TodoItem>
+            </Draggable>
+          </div>
+        ))}
+      </div>
       <button onClick={handleSubmit}>Submit</button>
     </>
   );
