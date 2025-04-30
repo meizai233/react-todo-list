@@ -1,7 +1,6 @@
 import "./App.css";
 import { useState } from "react";
-import TodosProvider from "./contexts/todo-context";
-import TodoList from "./comps/TodoList/todoList";
+import SearchableTable from "./comps/SearchableTable/SearchableTable";
 function App() {
   // const targetDate = new Date().getTime() + 60000;
 
@@ -11,9 +10,10 @@ function App() {
   return (
     <>
       {/* ??? 这里的value应该传什么? 为什么不是初始化的initData 他和初始值有什么关系 */}
-      <TodosProvider>
+      {/* <TodosProvider>
         <TodoList />
-      </TodosProvider>
+      </TodosProvider> */}
+      <SearchableTable></SearchableTable>
     </>
   );
 }
