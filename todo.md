@@ -56,15 +56,15 @@
 
 10. **拆分组件**：
 
-    - 将 TodoItem 拆分为独立组件
-    - 学习 props 传递和组件通信
-    - 处理组件重用的状态管理问题
+    - 将 TodoItem 拆分为独立组件 111
+    - 学习 props 传递和组件通信 111
+    - 处理组件重用的状态管理问题 111
 
 11. **使用 Context API**：
 
-    - 创建 TodoContext
-    - 避免 props drilling（属性传递链过长）
-    - 了解 Context 的性能影响
+    - 创建 TodoContext111
+    - 避免 props drilling（属性传递链过长）111
+    - 了解 Context 的性能影响 111
 
 12. **添加错误边界**：
     - 实现错误捕获组件

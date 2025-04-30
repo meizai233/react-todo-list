@@ -17,12 +17,20 @@ initData.forEach((v) => {
   v.isDone = false;
 });
 
-const initContext = { todos: initData, setTodos: (todos) => {}, changeIsDone: () => {}, changeIsEdit: () => {}, editTodo: () => {}, deleteTodo: () => {}, curDragTodo: null };
+const initContext = {
+  todos: initData,
+  setTodos: (todos) => {},
+  changeIsDone: () => {},
+  changeIsEdit: () => {},
+  editTodo: () => {},
+  deleteTodo: () => {},
+  curDragTodo: null,
+};
 
 export const TodosContext = createContext(initContext);
 
 function TodosProvider({ children }) {
-  const [todos, setTodos] = useState(initData);
+  const [todos, setTodos] = useState(JSON.parse(localStorage.getItem("todolist")) || initData);
 
   // 勾选的时候没有触发重新渲染
   const changeIsDone = useCallback((id) => {

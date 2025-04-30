@@ -129,13 +129,12 @@ export default function TodoList() {
     // const dragId = curDragRef.current;
     const dragId = e.dataTransfer?.getData("dragId");
     const { dropId } = data;
+    // 为什么在这里settodos之后 没有副作用函数调用？
     setTodos((pre) => {
       const dragItem = pre.find((v) => v.id === dragId);
       const todos = pre.filter((v) => v.id !== dragId);
-
       const dropIndex = todos.findIndex((v) => v.id === dropId);
       todos.splice(dropIndex, 0, dragItem);
-      console.log(todos, "after");
       return todos;
     });
   }
@@ -166,10 +165,10 @@ export default function TodoList() {
           {/* <DraggableTodo className="drag-todo-item" todo={todo} clickRef={clickRef} onClick={todoListChangeIsEdit}></DraggableTodo> */}
 
           {/* container + draggable */}
+          <TodoItemGap todo={todo} dropProps={useDroppable({ data: { dropId: todo.id }, dropCb: handleDrop })}></TodoItemGap>
           <Draggable dragId={todo.id}>
             <TodoItem className="drag-todo-item" todo={todo} clickRef={clickRef} onClick={todoListChangeIsEdit}></TodoItem>
           </Draggable>
-          <TodoItemGap todo={todo} dropProps={useDroppable({ data: { dropId: todo.id }, dropCb: handleDrop })}></TodoItemGap>
         </div>
       ))}
       <button onClick={handleSubmit}>Submit</button>
